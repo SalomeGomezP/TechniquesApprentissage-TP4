@@ -114,7 +114,16 @@ class LinearClassifier(object):
         #############################################################################
         # TODO: Compute the softmax loss & accuracy for a series of samples X,y .   #
         #############################################################################
-
+        for i in range(len(X)) :
+            #x=np.insert(x,0,1)  #tester insert
+            [l,dW]=self.cross_entropy_loss(X[i], y[i],reg)
+            loss+=l
+            accu+=dW
+# =============================================================================
+#         loss=loss/len(X)
+#         accu=accu/len(X)
+# =============================================================================
+            
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -145,13 +154,38 @@ class LinearClassifier(object):
         # 1- Compute softmax => eq.(4.104) or eq.(5.25) Bishop                      #
         # 2- Compute cross-entropy loss => eq.(4.108)                               #
         # 3- Dont forget the regularization!                                        #
-        # 4- Compute gradient => eq.(4.104)                                         #
+        # 4- Compute gradient => eq.(4.109)                                         #
         #############################################################################
-
-        #############################################################################
-        #                          END OF YOUR CODE                                 #
-        #############################################################################
+        x=np.append(x,1)
+        yk = np.exp(np.dot(self.W.T,x)) / np.sum(np.exp(np.dot(self.W.T,x)))
+        loss = np.sum(y*np.log(yk))+ reg*np.linalg.norm(self.W)
+        loss = loss*(-1)
+        dW = np.dot(np.exp(x) / np.sum(np.exp(x), axis=0)-y,x)
+         #############################################################################
+         #                          END OF YOUR CODE                                 #
+         #############################################################################
         return loss, dW
+        
+        
+# =============================================================================
+#         loss = 0
+#         for k in range(self.num_features):
+#             loss += y*np.log(self.soft_max(k,x))
+#         loss += reg*np.linalg.norm(self.W)
+#         loss = loss*(-1)
+#         dW = np.dot(self.soft_max(k,x)-y,x)
+#         
+# 
+#         #############################################################################
+#         #                          END OF YOUR CODE                                 #
+#         #############################################################################
+#         return loss, dW
+#     
+#     def soft_max(self,k,x):
+#             ak = np.dot(self.W[:,k].T,x)
+#             yk = np.exp(ak)/np.sum(np.exp(np.dot(self.W.T,x)),axis=0)
+#             return yk
+# =============================================================================
 
 
 def augment(x):
