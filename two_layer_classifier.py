@@ -300,17 +300,20 @@ class DenseLayer(object):
         #############################################################################
         #f = self.W[1] ## REMOVE THIS LINE
         
-        tmp=0
         print(x.shape)
         print(self.activation)
+        tmp=np.dot(self.W.T,x)
+        f=np.zeros(tmp.shape)
+        
         if (self.activation=='sigmoid') :
-            tmp=sigmoid(np.dot(self.W.T,x))
-            f=np.array([tmp])
+            for i in range (tmp.shape[0])
+                f[i]=sigmoid(tmp[i])
+                
         elif (self.activation=='relu') :
-            tmp=np.max(np.dot(self.W.T,x),0)
-            f=np.array([tmp])
+            for i in range (tmp.shape[0])
+                f[i]=np.max(tmp[i],0)
         else:
-            f=np.dot(self.W.T,x)
+            f=tmp
             
         #############################################################################
         #                          END OF YOUR CODE                                 #
