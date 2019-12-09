@@ -88,10 +88,9 @@ class LinearClassifier(object):
          Returns a class label for each sample (a number between 0 and num_classes-1)
         """
         class_label = np.zeros(X.shape[0])
-        #############################################################################
-        # TODO: Return the best class label.                                        #
-        #############################################################################
 
+        y = np.exp(np.dot(self.W.T,X)) / np.sum(np.exp(np.dot(self.W.T,X)))
+        print(y)
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -118,11 +117,11 @@ class LinearClassifier(object):
             #x=np.insert(x,0,1)  #tester insert
             [l,dW]=self.cross_entropy_loss(X[i], y[i],reg)
             loss+=l
-            accu+=dW
-# =============================================================================
-#         loss=loss/len(X)
-#         accu=accu/len(X)
-# =============================================================================
+            self.W=self.W-dW
+            accu+=int(y[i]==self.predict(X[i]))
+        
+        loss=loss/len(X)
+        accu=accu/len(X)
             
         #############################################################################
         #                          END OF YOUR CODE                                 #
