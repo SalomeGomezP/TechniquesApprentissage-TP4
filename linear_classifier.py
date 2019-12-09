@@ -94,7 +94,7 @@ class LinearClassifier(object):
         #############################################################################
         if self.bias:
             X = augment(X)
-        yw=np.dot(self.W.T,X)
+        yw=np.dot(self.W.T,X.T)
         class_label=np.argmax(yw, axis=0)
         #############################################################################
         #                          END OF YOUR CODE                                 #
