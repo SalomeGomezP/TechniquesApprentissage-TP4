@@ -128,10 +128,7 @@ class LinearClassifier(object):
             accu+=np.sum(dW)
 
         loss=loss/len(X)
-        accu=accu/len(X)  
-        
-        accu=1-accu
-        print(accu)
+        accu=1-accu/len(X)
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -174,7 +171,7 @@ class LinearClassifier(object):
         softmax[y]-=1
         for i in range(self.W.shape[1]):
             dW[:,i]=softmax[i]*x
-
+            
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
