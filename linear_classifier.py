@@ -125,13 +125,18 @@ class LinearClassifier(object):
         for i in range(X.shape[0]) :
             [l,dW]=self.cross_entropy_loss(X[i,:], y[i],reg)
             loss+=l
-            accu+=np.sum(dW)
+
+            yw=np.dot(self.W.T,X[i,:])
+            class_label=np.argmax(yw, axis=0)
+            if(class_label!=y[i]) :
+                accu+=1
+
 
         loss=loss/len(X)
         accu=accu/len(X)  
         
         accu=1-accu
-        print(accu)
+
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
