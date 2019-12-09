@@ -144,7 +144,7 @@ class TwoLayerClassifier(object):
 
         loss=loss/len(x)
         accu=accu/len(x)  
-        print("cc")
+
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -242,7 +242,6 @@ class TwoLayerNet(object):
         # 4- Compute gradient with respect to the score => eq.(4.109) with phi_n=1  #
         #############################################################################
         
-        print(scores)
         activations=np.exp(scores)
         softmax=activations/np.sum(activations)
         
@@ -300,17 +299,16 @@ class DenseLayer(object):
         #############################################################################
         #f = self.W[1] ## REMOVE THIS LINE
         
-        print(x.shape)
-        print(self.activation)
+
         tmp=np.dot(self.W.T,x)
         f=np.zeros(tmp.shape)
         
         if (self.activation=='sigmoid') :
-            for i in range (tmp.shape[0])
+            for i in range(tmp.shape[0]) :
                 f[i]=sigmoid(tmp[i])
                 
         elif (self.activation=='relu') :
-            for i in range (tmp.shape[0])
+            for i in range (tmp.shape[0]) :
                 f[i]=np.max(tmp[i],0)
         else:
             f=tmp
