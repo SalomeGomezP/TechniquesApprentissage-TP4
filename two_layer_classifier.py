@@ -14,6 +14,7 @@ class TwoLayerClassifier(object):
         self.net = TwoLayerNet(num_features, num_hidden_neurons, num_classes, activation)
 
         self.momentum_cache_v_prev = {}
+        
 
     def train(self, num_epochs=1, lr=1e-3, l2_reg=1e-4, lr_decay=1.0, momentum=0.0):
         """
@@ -88,7 +89,10 @@ class TwoLayerClassifier(object):
             #############################################################################
             # TODO: return the most probable class label for one sample.                #
             #############################################################################
-            return 0
+            predict=self.net.forward(x)
+            class_label=np.argmax(predict, axis=0)
+            return class_label
+            #return 0
             #############################################################################
             #                          END OF YOUR CODE                                 #
             #############################################################################
@@ -97,7 +101,12 @@ class TwoLayerClassifier(object):
             #############################################################################
             # TODO: return the most probable class label for many samples               #
             #############################################################################
-            return np.zeros(x.shape[0])
+            res=np.zeros(x.shape[0])
+            for i in range(x.shape[0]) :
+                res[i]=self.predict(x[i])
+                
+            return res
+            #return np.zeros(x.shape[0])
             #############################################################################
             #                          END OF YOUR CODE                                 #
             #############################################################################
@@ -121,8 +130,21 @@ class TwoLayerClassifier(object):
         accu = 0
         #############################################################################
         # TODO: Compute the softmax loss & accuracy for a series of samples X,y .   #
-        #############################################################################
+        #############################################################################            
+        
+        for i in range(x.shape[0]) :
+            scores=self.net.forward(x[i,:])
+            [l,dW]=self.net.cross_entropy_loss(scores, y[i])
+            loss+=l
 
+            class_label=np.argmax(scores, axis=0)
+            if(class_label!=y[i]) :
+                accu+=1
+
+
+        loss=loss/len(x)
+        accu=accu/len(x)  
+        print("cc")
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -143,8 +165,10 @@ class TwoLayerClassifier(object):
         #############################################################################
         # TODO: update w with momentum                                              #
         #############################################################################
-        v=mu*v_prev-lr*dw
-        w+=v
+        #v=0 # remove this line
+        # Momentum update
+        v = mu * v_prev - lr * dw # integrate velocity
+        w += v # integrate position
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -203,7 +227,7 @@ class TwoLayerNet(object):
         - y: training label as an integer
         Returns a tuple of:
         - loss as single float
-        - gradient with respect to weights; an array of same shape as W1 and W2
+        - gradient with respect to score; an array of same shape of scores
         """
 
         loss = 999.9
@@ -215,9 +239,18 @@ class TwoLayerNet(object):
         # 1- Compute softmax => eq.(4.104) or eq.(5.25) Bishop                      #
         # 2- Compute cross-entropy loss => eq.(4.108)                               #
         # 3- Dont forget the regularization!                                        #
-        # 4- Compute gradient with respect to the score => eq.(4.104) with phi_n=1  #
+        # 4- Compute gradient with respect to the score => eq.(4.109) with phi_n=1  #
         #############################################################################
-
+        
+        print(scores)
+        activations=np.exp(scores)
+        softmax=activations/np.sum(activations)
+        
+        loss=-y*np.log(softmax[y])
+        loss+=self.l2_reg*(np.sqrt(np.power(np.linalg.norm(self.layer1.W),2)+np.power(np.linalg.norm(self.layer2.W),2)))
+        
+        scores[y]=scores[y]-1
+        dloss_dscores=scores
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -265,8 +298,20 @@ class DenseLayer(object):
         # TODO: Compute forward pass.  Do not forget to add 1 to x in case of bias  #
         # C.f. function augment(x)                                                  #
         #############################################################################
-        f = self.W[1] ## REMOVE THIS LINE
-
+        #f = self.W[1] ## REMOVE THIS LINE
+        
+        tmp=0
+        print(x.shape)
+        print(self.activation)
+        if (self.activation=='sigmoid') :
+            tmp=sigmoid(np.dot(self.W.T,x))
+            f=np.array([tmp])
+        elif (self.activation=='relu') :
+            tmp=np.max(np.dot(self.W.T,x),0)
+            f=np.array([tmp])
+        else:
+            f=np.dot(self.W.T,x)
+            
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
