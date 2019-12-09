@@ -94,7 +94,7 @@ class LinearClassifier(object):
         #############################################################################
         if self.bias:
             X = augment(X)
-        yw=np.dot(self.W.T,X)
+        yw=np.dot(self.W.T,X.T)
         class_label=np.argmax(yw, axis=0)
         #############################################################################
         #                          END OF YOUR CODE                                 #
@@ -125,13 +125,18 @@ class LinearClassifier(object):
         for i in range(X.shape[0]) :
             [l,dW]=self.cross_entropy_loss(X[i,:], y[i],reg)
             loss+=l
-            accu+=np.sum(dW)
+
+            yw=np.dot(self.W.T,X[i,:])
+            class_label=np.argmax(yw, axis=0)
+            if(class_label!=y[i]) :
+                accu+=1
+
 
         loss=loss/len(X)
         accu=accu/len(X)  
         
         accu=1-accu
-        print(accu)
+
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -174,7 +179,7 @@ class LinearClassifier(object):
         softmax[y]-=1
         for i in range(self.W.shape[1]):
             dW[:,i]=softmax[i]*x
-
+            
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
