@@ -174,12 +174,12 @@ class LinearClassifier(object):
         activations=np.exp(np.dot(self.W.T,x))
         softmax=activations/np.sum(activations)
   
-        loss=-y*np.log(softmax[y])+reg*np.linalg.norm(self.W)
+        loss=-1*np.log(softmax[y])+reg*np.linalg.norm(self.W)
         
         softmax[y]-=1
         for i in range(self.W.shape[1]):
             dW[:,i]=softmax[i]*x
-            
+
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################

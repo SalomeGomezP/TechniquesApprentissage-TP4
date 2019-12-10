@@ -1,3 +1,9 @@
+#####
+# Julien Brochier 19 156 832
+# Arnaud Godart 19 156 869
+# Salomé Gomez 19 156 930
+#####
+
 import numpy as np
 
 
