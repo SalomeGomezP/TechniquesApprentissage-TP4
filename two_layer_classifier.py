@@ -131,12 +131,11 @@ class TwoLayerClassifier(object):
         #############################################################################
         # TODO: Compute the softmax loss & accuracy for a series of samples X,y .   #
         #############################################################################            
-        
         for i in range(x.shape[0]) :
             scores=self.net.forward(x[i,:])
             [l,dW]=self.net.cross_entropy_loss(scores, y[i])
             loss+=l
-
+            
             class_label=np.argmax(scores, axis=0)
             if(class_label!=y[i]) :
                 accu+=1
@@ -144,7 +143,8 @@ class TwoLayerClassifier(object):
 
         loss=loss/len(x)
         accu=accu/len(x)  
-
+        
+        accu=1-accu
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
@@ -245,11 +245,11 @@ class TwoLayerNet(object):
         activations=np.exp(scores)
         softmax=activations/np.sum(activations)
         
-        loss=-y*np.log(softmax[y])
+        loss=-1*np.log(softmax[y])
         loss+=self.l2_reg*(np.sqrt(np.power(np.linalg.norm(self.layer1.W),2)+np.power(np.linalg.norm(self.layer2.W),2)))
         
-        scores[y]=scores[y]-1
-        dloss_dscores=scores
+        softmax[y]=softmax[y]-1
+        dloss_dscores=softmax
         #############################################################################
         #                          END OF YOUR CODE                                 #
         #############################################################################
